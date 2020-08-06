@@ -2,23 +2,14 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
+from qx_base.qx_core.models import ContentTypeRelated, load_set_queryset_object
 
 
 User = get_user_model()
 
 
-class UserMessageManager(models.Manager):
-    """
-    UserMessage Manager
-    """
+class UserMessage(ContentTypeRelated):
 
-    pass
-
-
-class UserMessage(models.Model):
-
-    type = models.CharField(
-        verbose_name="类型", max_length=10, db_index=True)
     user_id = models.IntegerField(
         verbose_name="用户Id", null=True, blank=True, db_index=True)
     from_user_id = models.IntegerField(
@@ -33,10 +24,14 @@ class UserMessage(models.Model):
         verbose_name="详情", default=dict)
 
     @staticmethod
-    def load_related_objects(queryset, type_model_map):
-        type_data = {}
-        for instance in queryset:
-            type_data.setdefault(instance._type, )
+    def load_user(queryset):
+        return load_set_queryset_object(
+            queryset, User, 'user_id', 'user', ['userinfo'])
+
+    @staticmethod
+    def load_from_user(queryset):
+        return load_set_queryset_object(
+            queryset, User, 'from_user_id', 'from_user', ['userinfo'])
 
     class Meta:
         abstract = True

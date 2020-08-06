@@ -26,7 +26,10 @@ if _settings:
 def get_attr(key, val):
     if key in IMPORT_LIST:
         if val:
-            return import_string(val)
+            if isinstance(val, str):
+                return import_string(val)
+            else:
+                return val
         else:
             raise ImportError('Settings {} import error.'.format(key))
     return val
@@ -34,4 +37,4 @@ def get_attr(key, val):
 
 usermessage_settings = DictInstance(**QX_USERMESSAGE_SETTINGS)
 for key, val in _b_settings.items():
-    setattr(usermessage_settings, key, get_attr(val))
+    setattr(usermessage_settings, key, get_attr(key, val))

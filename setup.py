@@ -14,6 +14,7 @@ setup(
         'Django >= 2.2',
         'djangorestframework >= 3.10',
         'celery >= 4.3',
+        'psycopg2 >= 2.8.3',
     ],
     python_requires='>=3.8',
     platforms='any',
