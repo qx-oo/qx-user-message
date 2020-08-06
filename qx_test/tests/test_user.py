@@ -27,7 +27,6 @@ class TestUserMessage:
         assert len(message_list) > 1
 
         request = rf.get('/api/tests/user-message/')
-        # request.user = user2
         force_authenticate(request, user2)
         views = csrf_exempt(UserMessageViewSet.as_view({'get': 'list'}))
         response = views(request)
@@ -37,26 +36,9 @@ class TestUserMessage:
         req_data = {
             'type': 'user',
         }
-        request = rf.put('/api/tests/user-message/bulk-read/', data=req_data)
+        request = rf.put('/api/tests/user-message/bulk-read/',
+                         data=req_data, content_type='application/json')
         force_authenticate(request, user2)
         views = csrf_exempt(UserMessageViewSet.as_view({'put': 'update_bulk'}))
-        breakpoint()
         response = views(request)
         assert response.status_code == 200
-
-        # user1 = User.objects.get(account='18866668881')
-        # user2 = User.objects.get(account='18866668882')
-        # user3 = User.objects.get(account='18866668883')
-        # Baby.objects.create(name='test1', type="user",
-        #                     object_id=user1.id, user_id=user1.id,)
-        # Baby.objects.create(name='test2', type="user",
-        #                     object_id=user2.id, user_id=user2.id,)
-        # Baby.objects.create(name='test3', type="user",
-        #                     object_id=user3.id, user_id=0,)
-        # Baby.objects.create(name='test4', type="test",
-        #                     object_id=None, user_id=user1.id,)
-
-        # queryset = Baby.objects.all()
-        # queryset = Baby.prefetch_type_object(queryset)
-        # queryset = Baby.load_user(queryset)
-        # assert hasattr(queryset[0], 'type_object')
