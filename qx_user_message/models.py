@@ -5,9 +5,6 @@ from django.contrib.postgres.fields import JSONField
 from qx_base.qx_core.models import ContentTypeRelated, load_set_queryset_object
 
 
-User = get_user_model()
-
-
 class UserMessage(ContentTypeRelated):
 
     user_id = models.IntegerField(
@@ -25,6 +22,7 @@ class UserMessage(ContentTypeRelated):
 
     @staticmethod
     def load_user(queryset):
+        User = get_user_model()
         field_map = {
             'user_id': 'user',
             'from_user_id': 'from_user'
