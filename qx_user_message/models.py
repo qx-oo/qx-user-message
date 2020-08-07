@@ -25,13 +25,12 @@ class UserMessage(ContentTypeRelated):
 
     @staticmethod
     def load_user(queryset):
+        field_map = {
+            'user_id': 'user',
+            'from_user_id': 'from_user'
+        }
         return load_set_queryset_object(
-            queryset, User, 'user_id', 'user', ['userinfo'])
-
-    @staticmethod
-    def load_from_user(queryset):
-        return load_set_queryset_object(
-            queryset, User, 'from_user_id', 'from_user', ['userinfo'])
+            queryset, User, field_map, ['userinfo'])
 
     class Meta:
         abstract = True
