@@ -19,3 +19,4 @@ class SendUserMessage(Task):
         }
         instance = message_model.objects.create(**data)
         send_callback(instance)
+        return instance.id
