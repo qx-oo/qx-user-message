@@ -9,7 +9,7 @@ message_model = usermessage_settings.MESSAGE_MODEL_CLASS
 
 class SendUserMessage(Task):
 
-    def run(self, _type, object_id, from_user, to_user, detail: 'dumps dict'):
+    def run(self, _type, object_id, from_user, to_user, detail: str):
         data = {
             "type": _type,
             "object_id": object_id,

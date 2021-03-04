@@ -1,6 +1,6 @@
-# qx-platform-auth
+# qx-user-message
 
-my django project thirdparty platform auth
+my django project user message center
 
 #### Depends:
 
