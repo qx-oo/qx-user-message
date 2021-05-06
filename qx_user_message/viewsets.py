@@ -39,7 +39,7 @@ class UserMessageViewSet(viewsets.GenericViewSet,
         IsAuthenticated,
     )
     queryset = UserMessage.objects.all().order_by('-created')
-    filter_fields = ('is_read',)
+    filter_fields = ('is_read', 'type', )
 
     def get_serializer_class(self):
         if self.action == 'update_bulk':
