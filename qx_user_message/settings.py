@@ -4,14 +4,16 @@ from qx_base.qx_core.tools import DictInstance
 
 
 IMPORT_LIST = [
-    'MESSAGE_MODEL_CLASS',
-    'MESSAGE_SEND_CALLBACK',
+    'message_send_callback',
+    'message_user_serializer',
 ]
 
 
 QX_USERMESSAGE_SETTINGS = {
-    "MESSAGE_MODEL_CLASS": None,
-    "MESSAGE_SEND_CALLBACK": None,
+    "message_send_callback": lambda m: m,
+    "message_object_map": None,
+    "message_user_serializer": None,
+    "has_userinfo": True,
 }
 
 _b_settings = QX_USERMESSAGE_SETTINGS
@@ -30,8 +32,6 @@ def get_attr(key, val):
                 return import_string(val)
             else:
                 return val
-        else:
-            raise ImportError('Settings {} import error.'.format(key))
     return val
 
 

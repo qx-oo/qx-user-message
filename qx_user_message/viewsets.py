@@ -4,18 +4,18 @@ from rest_framework.permissions import (
 )
 from qx_base.qx_rest import mixins
 from qx_base.qx_rest.response import ApiResponse
+from .models import UserMessage
 from .serializers import (
     UserMessageSerializer,
     BulkUpdateUserMessageSerializer,
-    message_model,
 )
 
 
 class UserMessageViewSet(viewsets.GenericViewSet,
                          mixins.ListModelMixin,
                          mixins.RetrieveModelMixin,
-                         mixins.PostModelMixin,
-                         mixins.UpdateModelMixin,):
+                         mixins.UpdateModelMixin,
+                         mixins.PostModelMixin,):
     """
     User Message
     ____
@@ -38,13 +38,26 @@ class UserMessageViewSet(viewsets.GenericViewSet,
     permission_classes = (
         IsAuthenticated,
     )
-    queryset = message_model.objects.all().order_by('-created')
+    queryset = UserMessage.objects.all().order_by('-created')
     filter_fields = ('is_read',)
 
     def get_serializer_class(self):
         if self.action == 'update_bulk':
             return BulkUpdateUserMessageSerializer
         return UserMessageSerializer
+
+    def _list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        UserMessage.load_user(page)
+        serializer = self.get_serializer(page, many=True)
+        return self.paginator.get_paginated_data(serializer.data)
+
+    def _retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        UserMessage.load_user(instance)
+        serializer = self.get_serializer(instance)
+        return serializer.data
 
     def get_queryset(self):
         if self.request.user.is_authenticated:

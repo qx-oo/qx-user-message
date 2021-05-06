@@ -15,17 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from qx_user_message.viewsets import UserMessageViewSet
 
-router = DefaultRouter()
-router.register('user-message', UserMessageViewSet)
-
-urlpatterns_api = [
-    path('', include(router.urls)),
-]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/tests/', include(urlpatterns_api)),
+    path('api/message/', include('qx_user_message.urls')),
 ]

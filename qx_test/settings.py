@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'qx_base.qx_core',
     'qx_user_message',
-    'qx_test.user_message',
 ]
 
 MIDDLEWARE = [
@@ -79,12 +78,8 @@ WSGI_APPLICATION = 'qx_test.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'qx_test',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -129,8 +124,13 @@ STATIC_URL = '/static/'
 
 
 QX_USERMESSAGE_SETTINGS = {
-    "MESSAGE_MODEL_CLASS": 'qx_test.user_message.models.UserMessage',
-    "MESSAGE_SEND_CALLBACK": lambda empty: empty,
+    "message_send_callback": lambda empty: empty,
+    "message_object_map": {
+        'user': 'auth.User',
+        'test': None,
+    },
+    "message_user_serializer": 'qx_test.serializers.SimpleUserSerializer',
+    'has_userinfo': False,
 }
 
 

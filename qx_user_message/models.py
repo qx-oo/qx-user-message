@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
+from django.conf import settings
 from qx_base.qx_core.models import ContentTypeRelated, load_set_queryset_object
 
 
@@ -20,6 +21,8 @@ class UserMessage(ContentTypeRelated):
     detail = JSONField(
         verbose_name="详情", default=dict)
 
+    type_map_model = settings.QX_USERMESSAGE_SETTINGS['message_object_map']
+
     @staticmethod
     def load_user(queryset):
         User = get_user_model()
@@ -27,8 +30,13 @@ class UserMessage(ContentTypeRelated):
             'user_id': 'user',
             'from_user_id': 'from_user'
         }
+        if settings.QX_USERMESSAGE_SETTINGS.get('has_userinfo', True):
+            select_related = ['userinfo']
+        else:
+            select_related = []
         return load_set_queryset_object(
-            queryset, User, field_map, ['userinfo'])
+            queryset, User, field_map, select_related)
 
     class Meta:
-        abstract = True
+        verbose_name = 'UserMessage'
+        verbose_name_plural = verbose_name

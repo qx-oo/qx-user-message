@@ -23,21 +23,24 @@ settings.py:
     ]
 
     QX_USERMESSAGE_SETTINGS = {
-        "MESSAGE_MODEL_CLASS": 'qx_test.user_message.models.UserMessage',
-        "MESSAGE_SEND_CALLBACK": lambda empty: empty,
+        "message_send_callback": lambda empty: empty,
+        "message_object_map": {
+            "comment": "comment.Comment",
+            "star": "comment.Star",
+        },
+        "message_user_serializer": "user.models.SimpleUserSerializer",
     }
 
-models.py:
+urls.py:
 
-    from qx_user_message.models import UserMessage as QxUserMessage
+    urlpatterns_api = [
+        path('', include('qx_user_message.urls')),
+    ]
 
-    class UserMessage(QxUserMessage):
+celery.py:
 
-        type_map_model = {
-            'user': 'auth.User',
-            'test': None,
-        }
-
-        class Meta:
-            verbose_name = 'UserMessage'
-            verbose_name_plural = verbose_name
+    app.conf.task_routes = {
+        'qx_user_message.tasks.SendUserMessage': {
+            'queue': 'default',
+        },
+    }

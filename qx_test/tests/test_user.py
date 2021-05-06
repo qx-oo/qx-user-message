@@ -2,7 +2,7 @@ import pytest
 import json
 from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
-from qx_test.user_message.models import UserMessage
+from qx_user_message.models import UserMessage
 from qx_user_message.tasks import SendUserMessage
 from qx_user_message.viewsets import UserMessageViewSet
 from rest_framework.test import force_authenticate
@@ -26,17 +26,19 @@ class TestUserMessage:
         message_list = list(UserMessage.objects.filter(user_id=user2.id))
         assert len(message_list) > 1
 
-        request = rf.get('/api/tests/user-message/')
+        request = rf.get('/api/message/user-message/')
         force_authenticate(request, user2)
         views = csrf_exempt(UserMessageViewSet.as_view({'get': 'list'}))
         response = views(request)
         data = json.loads(response.content)
         assert len(data['data']['results']) > 1
+        assert data['data']['results'][0]['user']
+        assert data['data']['results'][0]['from_user']
 
         req_data = {
             'type': 'user',
         }
-        request = rf.put('/api/tests/user-message/bulk-read/',
+        request = rf.put('/api/message/user-message/bulk-read/',
                          data=req_data, content_type='application/json')
         force_authenticate(request, user2)
         views = csrf_exempt(UserMessageViewSet.as_view({'put': 'update_bulk'}))

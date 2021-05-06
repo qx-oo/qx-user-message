@@ -1,10 +1,10 @@
 import json
 from celery.task import Task
 from .settings import usermessage_settings
+from .models import UserMessage
 
 
-send_callback = usermessage_settings.MESSAGE_SEND_CALLBACK
-message_model = usermessage_settings.MESSAGE_MODEL_CLASS
+send_callback = usermessage_settings.message_send_callback
 
 
 class SendUserMessage(Task):
@@ -17,6 +17,6 @@ class SendUserMessage(Task):
             "user_id": to_user,
             "detail": json.loads(detail),
         }
-        instance = message_model.objects.create(**data)
+        instance = UserMessage.objects.create(**data)
         send_callback(instance)
         return instance.id
